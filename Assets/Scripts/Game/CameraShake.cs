@@ -8,19 +8,24 @@ public class CameraShake : MonoBehaviour
     public float shake_decay;
     public float shake_intensity;
 
-
+    
     void Update()
     {
         if (shake_intensity > 0)
         {
             transform.position = originPosition + Random.insideUnitSphere * shake_intensity;
             transform.rotation = new Quaternion(
-            originRotation.x + Random.Range(-shake_intensity, shake_intensity) * .2f,
-            originRotation.y + Random.Range(-shake_intensity, shake_intensity) * .2f,
+            originRotation.x,
+            originRotation.y,
             originRotation.z + Random.Range(-shake_intensity, shake_intensity) * .2f,
-            originRotation.w + Random.Range(-shake_intensity, shake_intensity) * .2f);
+            originRotation.w);
             shake_intensity -= shake_decay;
         }
+		else
+		{
+			transform.position = originPosition;
+			transform.rotation = originRotation;
+		}
     }
 
     public void Shake(float intensity, float decay)
