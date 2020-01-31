@@ -1,0 +1,17 @@
+build/
+Temp/
+Library/
+Obj/
+*.csproj
+*.unityproj
+*.sln
+*.user
+*.userprefs
+*.DS_store
+test*/
+Assets/SaveFile/
+SaveFile*
+_unused*/
+*/_unused*/
+.vs/
+.vscode/
