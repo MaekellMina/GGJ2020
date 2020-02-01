@@ -114,11 +114,12 @@ public class HammerBar : MonoBehaviour
                     }
 					else
 					{
-						Debug.Log("WRONG");
+                        AudioManager.instance.PlayAudioClip(Random.Range(7, 9));
+                        Debug.Log("WRONG");
 						cameraShake.Shake(0.1f, 0.02f);
 						animator.Play("Fail");
 						Failed.Invoke();
-                        AudioManager.instance.PlayAudioClip(Random.Range(7,9));
+                        GameManager.instance.RandomCurse();
                     }
 
 					if(!tutorialDone)

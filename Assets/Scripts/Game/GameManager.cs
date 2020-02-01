@@ -632,4 +632,22 @@ public class GameManager : MonoBehaviour
         ChangeGameState(GAMESTATES.INIT);
     }
 
+    public void RandomCurse()
+    {
+        int num = UnityEngine.Random.Range(0, 3);
+        int audioIndex = 0;
+        switch (num)
+        {
+            case 0:
+                audioIndex = 14;
+                break;
+            case 1:
+                audioIndex = 18;
+                break;
+            case 2:
+                audioIndex = 22;
+                break;
+        }
+        AudioManager.instance.PlayAudioClip(audioIndex);
+    }
 }
