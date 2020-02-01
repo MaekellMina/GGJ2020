@@ -7,6 +7,8 @@ using UnityEngine.Events;
 public class FurnaceBar : MonoBehaviour {
 
 	public RectTransform furnaceFill;
+	public GameObject tutorialText1;
+	public GameObject tutorialText2;
     float barStartValue = 0f;
 	private float curValue;
     private float acceleration;
@@ -50,9 +52,21 @@ public class FurnaceBar : MonoBehaviour {
 				if (Input.GetKey(KeyCode.Space))
 				{
 					speed += acceleration;
-					fillAmount += Time.deltaTime * speed;
-					furnaceFill.anchoredPosition = new Vector2(furnaceFill.anchoredPosition.x,
-															   parentRectTransform.sizeDelta.y * fillAmount);
+
+					if (!tutorialDone &&
+                (!tutorialText2.activeInHierarchy &&
+					fillAmount > (minTargetValue + maxTargetValue) / 2))
+                    {
+						tutorialText1.SetActive(false);
+                        tutorialText2.SetActive(true);
+                    }
+
+					if (!tutorialText2.activeInHierarchy)
+					{
+						fillAmount += Time.deltaTime * speed;
+						furnaceFill.anchoredPosition = new Vector2(furnaceFill.anchoredPosition.x,
+																   parentRectTransform.sizeDelta.y * fillAmount);
+					}
 
 					if (fillAmount >= 1)
 					{
@@ -63,6 +77,12 @@ public class FurnaceBar : MonoBehaviour {
 
 				if (Input.GetKeyUp(KeyCode.Space))
 				{
+					if(!tutorialDone)
+					{
+						tutorialDone = true;
+						tutorialText1.SetActive(false);
+						tutorialText2.SetActive(false);
+					}
 					ReleaseFurnace();
 				}
 			}
@@ -80,6 +100,9 @@ public class FurnaceBar : MonoBehaviour {
         targetMarker.offsetMin = new Vector2(0, parentRectTransform.sizeDelta.y * minTargetValue);
 		isTriggered = false;
 		started = false;
+
+		if (!tutorialDone)
+			tutorialText1.SetActive(true);
     }
     public void ReleaseFurnace()
     {

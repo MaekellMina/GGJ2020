@@ -10,6 +10,7 @@ public class HammerBar : MonoBehaviour
 	public RectTransform targetArea;    //for display purposes (will indicate which area is user's target to land on)
 	public Text requiredHitsUI;
 	public RectTransform shadowRT;
+	public GameObject tutorialText;
 
 	private RectTransform rectTransform;
 	private CameraShake cameraShake;
@@ -97,6 +98,7 @@ public class HammerBar : MonoBehaviour
 			{
 				if (canHammer)
 				{
+					AudioManager.instance.PlayAudioClip(Random.Range(15, 18));
 					if (timingIndicator.anchoredPosition.x >= hammerbarWidth * targetStartPercentage &&
 					   timingIndicator.anchoredPosition.x <= hammerbarWidth * targetEndPercentage)
 					{
@@ -116,11 +118,26 @@ public class HammerBar : MonoBehaviour
 						animator.Play("Fail");
 						Failed.Invoke();
 					}
+
+					if(!tutorialDone)
+					{
+						tutorialText.SetActive(false);
+						tutorialDone = true;
+					}
 				}
 				canHammer = false;
 			}
-			
-			timingIndicator.anchoredPosition += new Vector2(scrollSpeed * step, 0); //move the indicator
+            
+			if (!tutorialDone &&
+			    (!tutorialText.activeInHierarchy &&
+			     (timingIndicator.anchoredPosition.x > (targetStartPercentage  * hammerbarWidth) + 75 && 
+			      timingIndicator.anchoredPosition.x < (targetEndPercentage * hammerbarWidth) - 75)))
+			{
+				tutorialText.SetActive(true);
+			}
+
+			if(!tutorialText.activeInHierarchy)
+			    timingIndicator.anchoredPosition += new Vector2(scrollSpeed * step, 0); //move the indicator
 
             //check if change dir
 			if(step > 0)

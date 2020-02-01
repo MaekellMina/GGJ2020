@@ -57,6 +57,10 @@ public class GameManager : MonoBehaviour
 	public TextAsset furnaceProgressionCSV;
 	public Text timerUI;
 	public GameObject poofPrefab;
+	public GameObject titleCanvas;
+	public GameObject ingameCanvas;
+	public GameObject titleUI;
+	public GameObject pressSpaceKeyUI;
 
 	//--------private game fields
 	private List<LevelSettings> levelSettings;
@@ -177,16 +181,43 @@ public class GameManager : MonoBehaviour
 			case GAMESTATES.MAINMENU:
 				if(gameStateCallOnce)
 				{
-
+					AudioManager.instance.PlayBGMusic(AudioManager.instance.audioClipList[6]);
 					gameStateCallOnce = false;
 				}
+
+				if (pressSpaceKeyUI.activeInHierarchy)
+				{
+					if (Input.GetKeyDown(KeyCode.Space))
+					{
+						int randomAudio = UnityEngine.Random.Range(0, 3);
+						int audioIndex = 0;
+						switch(randomAudio)
+						{
+							case 0:
+								audioIndex = 14;
+								break;
+							case 1:
+								audioIndex = 18;
+								break;
+							case 2:
+								audioIndex = 22;
+								break;
+						}
+						AudioManager.instance.PlayAudioClip(audioIndex);
+						titleUI.GetComponent<Animator>().Play("Falldown");
+						pressSpaceKeyUI.SetActive(false);
+						StartCoroutine(Start_IEnum());
+					}
+				}
+
 				break;
             case GAMESTATES.INIT:
                 if(gameStateCallOnce)
                 {
 					// -- Put codes that are needed to be called only once -- //
 					//Do the setup for the game here.
-                    
+					AudioManager.instance.PlayBGMusic(AudioManager.instance.audioClipList[1]);
+					ingameCanvas.SetActive(true);
 					curLevel = 1;
 					UpdateTimerUI(timer = MAX_TIME);
                     
@@ -504,6 +535,14 @@ public class GameManager : MonoBehaviour
 	{
 		GameObject poofInstance = Instantiate(poofPrefab, pos, Quaternion.identity) as GameObject;
 		Destroy(poofInstance, 1f);
+	}
+
+    private IEnumerator Start_IEnum()
+	{
+		yield return new WaitForSeconds(0.7f);
+		titleUI.SetActive(false);
+		titleCanvas.SetActive(false);
+		ChangeGameState(GAMESTATES.INIT);
 	}
 
     void SETPATH()
