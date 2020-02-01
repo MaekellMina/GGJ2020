@@ -98,11 +98,11 @@ public class HammerBar : MonoBehaviour
 			{
 				if (canHammer)
 				{
-					AudioManager.instance.PlayAudioClip(Random.Range(15, 18));
 					if (timingIndicator.anchoredPosition.x >= hammerbarWidth * targetStartPercentage &&
 					   timingIndicator.anchoredPosition.x <= hammerbarWidth * targetEndPercentage)
 					{
-						Debug.Log("CORRECT");
+                        AudioManager.instance.PlayAudioClip(Random.Range(15, 18));
+                        Debug.Log("CORRECT");
 						hitsMade++;
 						UpdateRequiredHitsUI();
 						if (hitsMade >= requiredHits)
@@ -110,7 +110,7 @@ public class HammerBar : MonoBehaviour
 							exit = true;
 							Success.Invoke();
 						}
-                        AudioManager.instance.PlayAudioClip(Random.Range(9,13));
+                        AudioManager.instance.PlayAudioClip(Random.Range(10,13));
                     }
 					else
 					{
@@ -118,7 +118,7 @@ public class HammerBar : MonoBehaviour
 						cameraShake.Shake(0.1f, 0.02f);
 						animator.Play("Fail");
 						Failed.Invoke();
-                        AudioManager.instance.PlayAudioClip(13);
+                        AudioManager.instance.PlayAudioClip(Random.Range(7,9));
                     }
 
 					if(!tutorialDone)
