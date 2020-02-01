@@ -41,6 +41,11 @@ public class FurnaceBar : MonoBehaviour {
 	}
 
 	void Update () {
+		if(GameManager.instance.gameState == GameManager.GAMESTATES.GAMEOVER)
+		{
+			return;
+		}
+
         if (isTriggered == false)
         {
 			if (Input.GetKeyDown(KeyCode.Space)) 
