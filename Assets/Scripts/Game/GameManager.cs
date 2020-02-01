@@ -243,6 +243,11 @@ public class GameManager : MonoBehaviour
                 }
 
 				UpdateTimerUI(timer -= Time.deltaTime);
+                if(timer <= 0)
+				{
+					ChangeGameState(GAMESTATES.GAMEOVER);
+					return;
+				}
                 //Game Loop
                 GameLoop();
                 break;
