@@ -3,6 +3,7 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -61,8 +62,10 @@ public class GameManager : MonoBehaviour
 	public GameObject ingameCanvas;
 	public GameObject titleUI;
 	public GameObject pressSpaceKeyUI;
+    public GameObject gameoverCanvas;
 	public Animator scoreSword;
 	public Text scoreText;
+    public Text gameoverScore;
 	public Animator[] anvils;
 
 	//--------private game fields
@@ -280,6 +283,11 @@ public class GameManager : MonoBehaviour
                     //
                     gameStateCallOnce = false;
                 }
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    SceneManager.LoadScene("Main");
+                    
+                }
                 break;
 
         }
@@ -322,14 +330,9 @@ public class GameManager : MonoBehaviour
     IEnumerator GameOver()
     {
 		yield return new WaitForSeconds(0.7f);
-        if(b_pass)
-        {
-            // If user has won
-        }
-        else
-        {
-            // If user has failed 
-        }
+        gameoverScore.text = score.ToString();
+        gameoverCanvas.SetActive(true);
+        ingameCanvas.SetActive(false);
         yield return null;
     }
 
