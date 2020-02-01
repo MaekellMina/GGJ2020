@@ -93,6 +93,12 @@ public class HammerBar : MonoBehaviour
         
 		while (!exit)
 		{
+			if(GameManager.instance.gameState == GameManager.GAMESTATES.GAMEOVER)
+			{
+				exit = true;
+				yield break;
+			}
+			
 			//input
             if(Input.GetKeyDown(KeyCode.Space))
 			{
@@ -119,7 +125,6 @@ public class HammerBar : MonoBehaviour
 						cameraShake.Shake(0.1f, 0.02f);
 						animator.Play("Fail");
 						Failed.Invoke();
-                        GameManager.instance.RandomCurse();
                     }
 
 					if(!tutorialDone)

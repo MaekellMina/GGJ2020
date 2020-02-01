@@ -196,22 +196,7 @@ public class GameManager : MonoBehaviour
 				{
 					if (Input.GetKeyDown(KeyCode.Space))
 					{
-						int randomAudio = UnityEngine.Random.Range(0, 3);
-						int audioIndex = 0;
-
-						switch(randomAudio)
-						{
-							case 0:
-								audioIndex = 14;
-								break;
-							case 1:
-								audioIndex = 18;
-                                break;
-							case 2:
-								audioIndex = 22;
-                                break;
-						}
-						AudioManager.instance.PlayAudioClip(audioIndex);
+						RandomCurse();
 						titleUI.GetComponent<Animator>().Play("Falldown");
 						pressSpaceKeyUI.SetActive(false);
 						StartCoroutine(Start_IEnum());
@@ -484,22 +469,9 @@ public class GameManager : MonoBehaviour
 		UpdateScoreUI(++score);
 		StartCoroutine(OnHammerSuccess_IEnum());
 
-        int randomAudio = UnityEngine.Random.Range(0, 3);
-        int audioIndex = 0;
-
-        switch (randomAudio)
-        {
-            case 0:
-                audioIndex = 19;
-                break;
-            case 1:
-                audioIndex = 20;
-                break;
-            case 2:
-                audioIndex = 21;
-                break;
-        }
-        AudioManager.instance.PlayAudioClip(audioIndex);
+        int randomAudio = UnityEngine.Random.Range(19, 22);
+        
+		AudioManager.instance.PlayAudioClip(randomAudio);
     }
 
     private IEnumerator OnHammerSuccess_IEnum()
@@ -513,6 +485,7 @@ public class GameManager : MonoBehaviour
 
     private void OnHammerFailed()
 	{
+		DecreaseLives();
 		OnActionFailed();
 	}
     
@@ -529,22 +502,9 @@ public class GameManager : MonoBehaviour
 		furnaceBar.GetComponent<Animator>().Play("Success");
 		StartCoroutine(OnFurnaceSuccess_IEnum());
 
-        int randomAudio = UnityEngine.Random.Range(0, 3);
-        int audioIndex = 0;
-
-        switch (randomAudio)
-        {
-            case 0:
-                audioIndex = 19;
-                break;
-            case 1:
-                audioIndex = 20;
-                break;
-            case 2:
-                audioIndex = 21;
-                break;
-        }
-        AudioManager.instance.PlayAudioClip(audioIndex);
+        int randomAudio = UnityEngine.Random.Range(19, 22);
+        
+		AudioManager.instance.PlayAudioClip(randomAudio);
     }
 
 	private IEnumerator OnFurnaceSuccess_IEnum()
@@ -558,6 +518,7 @@ public class GameManager : MonoBehaviour
    
     private void OnFurnaceFailed()
     {
+		DecreaseLives();
 		furnaceBar.GetComponent<Animator>().Play("Failed");
 		furnaceBar.GetComponent<CameraShake>().Shake(0.2f, 0.02f);
 		StartCoroutine(OnFurnaceFailed_IEnum());      
@@ -608,6 +569,7 @@ public class GameManager : MonoBehaviour
 	{
 		lives--;
 		anvils[lives].Play("Break");
+		RandomCurse();
         if(lives <= 0)
 		{
 			ChangeGameState(GAMESTATES.GAMEOVER);
