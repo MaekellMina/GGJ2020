@@ -31,7 +31,7 @@ public class HammerBar : MonoBehaviour
 		cameraShake = GetComponent<CameraShake>();
 		animator = GetComponent<Animator>();
 
-		SetHammerBar(3, 10, 250, 0.3f, 0.8f);
+		SetHammerBar(3, 5f, 250, 0.65f, 0.85f);
 	}
 
 	public void SetHammerBar(int requiredHits, float scrollSpeed, float hammerbarWidth, float targetStartPercentage, float targetEndPercentage)   
