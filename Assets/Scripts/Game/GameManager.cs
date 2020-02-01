@@ -567,6 +567,10 @@ public class GameManager : MonoBehaviour
 
     private void UpdateTimerUI(float timeLeft)
 	{
+		if (timeLeft < 0)
+			timeLeft = 0;
+		if (timeLeft > MAX_TIME)
+			timeLeft = MAX_TIME;
 		timerUI.text = ((int)timeLeft).ToString();
 	}
 
