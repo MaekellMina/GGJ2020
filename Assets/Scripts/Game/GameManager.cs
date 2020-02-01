@@ -63,6 +63,7 @@ public class GameManager : MonoBehaviour
 	public GameObject pressSpaceKeyUI;
 	public Animator scoreSword;
 	public Text scoreText;
+	public Animator[] anvils;
 
 	//--------private game fields
 	private List<LevelSettings> levelSettings;
@@ -72,6 +73,7 @@ public class GameManager : MonoBehaviour
 	private int curAction = 1;
 	private float timer;
 	private int score;
+	private int lives;
 
 	public float MAX_TIME = 20f;
 	public float FURNACE_REWARD = 3f;
@@ -221,6 +223,11 @@ public class GameManager : MonoBehaviour
 					//Do the setup for the game here.
 					AudioManager.instance.PlayBGMusic(AudioManager.instance.audioClipList[1]);
 					ingameCanvas.SetActive(true);
+					lives = 3;
+					for (int i = 0; i < anvils.Length; i++)
+					{
+						anvils[i].Play("Start");
+					}
 					curLevel = 1;
 					UpdateTimerUI(timer = MAX_TIME);
 					UpdateScoreUI(score = 0);
