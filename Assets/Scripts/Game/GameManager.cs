@@ -492,6 +492,7 @@ public class GameManager : MonoBehaviour
 		InstantiatePoofPrefab(hammerBar.transform.position);
 		hammerBar.gameObject.SetActive(false);
 		OnActionSuccess();
+        AudioManager.instance.PlayAudioClip(14);
 	}
 
     private void OnHammerFailed()
@@ -536,6 +537,7 @@ public class GameManager : MonoBehaviour
 		InstantiatePoofPrefab(furnaceBar.transform.position);
 		furnaceBar.gameObject.SetActive(false);
         OnActionSuccess();
+        AudioManager.instance.PlayAudioClip(14);
     }
    
     private void OnFurnaceFailed()
