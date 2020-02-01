@@ -9,6 +9,7 @@ public class HammerBar : MonoBehaviour
 	public RectTransform timingIndicator;   //the UI that scrolls along the bar
 	public RectTransform targetArea;    //for display purposes (will indicate which area is user's target to land on)
 	public Text requiredHitsUI;
+	public RectTransform shadowRT;
 
 	private RectTransform rectTransform;
 	private CameraShake cameraShake;
@@ -19,6 +20,8 @@ public class HammerBar : MonoBehaviour
 	private float hammerbarWidth = 100;         //width of the UI of hammer bar that the indicator will scroll through
 	private int requiredHits = 3;
 	private int hitsMade = 0;
+
+	private bool tutorialDone;
 
 	private Coroutine moveTimingIndicator;
 
@@ -64,6 +67,7 @@ public class HammerBar : MonoBehaviour
 		}
         
 		rectTransform.sizeDelta = new Vector2(hammerbarWidth, rectTransform.sizeDelta.y);
+		shadowRT.sizeDelta = rectTransform.sizeDelta;
 		targetArea.offsetMin = new Vector2(hammerbarWidth * targetStartPercentage, 0);
 		targetArea.offsetMax = new Vector2(-hammerbarWidth * (1 - targetEndPercentage), 0);
 
@@ -85,11 +89,11 @@ public class HammerBar : MonoBehaviour
 		int step = 1;   //determines the direction of movement of timing indicator (+1 = right, -1 = left)
 		bool exit = false;
 		bool canHammer = true;
-
+        
 		while (!exit)
 		{
 			//input
-            if(Input.GetKeyDown(KeyCode.F))
+            if(Input.GetKeyDown(KeyCode.Space))
 			{
 				if (canHammer)
 				{

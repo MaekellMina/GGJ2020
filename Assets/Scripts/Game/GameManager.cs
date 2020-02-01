@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     //Put your game states here
     public enum GAMESTATES
     {
+		MAINMENU,
         INIT,
         INGAME,
         PAUSED,
@@ -55,6 +56,7 @@ public class GameManager : MonoBehaviour
 	public TextAsset hammerProgressionCSV;
 	public TextAsset furnaceProgressionCSV;
 	public Text timerUI;
+	public GameObject poofPrefab;
 
 	//--------private game fields
 	private List<LevelSettings> levelSettings;
@@ -66,9 +68,9 @@ public class GameManager : MonoBehaviour
 
 
 	public float MAX_TIME = 20f;
-	public float FURNACE_REWARD = 2f;
-	public float HAMMER_REWARD = 5f;
-
+	public float FURNACE_REWARD = 3f;
+	public float HAMMER_REWARD = 6f;
+    
     void Awake()
     {
         if(instance != null)
@@ -172,6 +174,13 @@ public class GameManager : MonoBehaviour
     {
         switch(gameState)
         {
+			case GAMESTATES.MAINMENU:
+				if(gameStateCallOnce)
+				{
+
+					gameStateCallOnce = false;
+				}
+				break;
             case GAMESTATES.INIT:
                 if(gameStateCallOnce)
                 {
@@ -341,11 +350,9 @@ public class GameManager : MonoBehaviour
 					switch((int)levelSettings[curLevel - 1].sequence[curAction - 1].x)
 					{
 						case 0:
-							hammerBar.gameObject.SetActive(true);
 							StartShowHammerAction();
 							break;
 						case 1:
-							furnaceBar.gameObject.SetActive(true);
 							StartShowFurnaceAction();
 							break;
 					}
@@ -398,33 +405,48 @@ public class GameManager : MonoBehaviour
 
     private void StartShowHammerAction()
 	{
+		StartCoroutine(ShowHammerAction_IEnum());
+	}
+	private IEnumerator ShowHammerAction_IEnum()
+	{
+		yield return new WaitForSeconds(0.5f);
+        hammerBar.gameObject.SetActive(true);
 		HammerSettings hsToSet = hammerSettings[(int)levelSettings[curLevel - 1].sequence[curAction - 1].y];
-		hammerBar.SetHammerBar(hsToSet);
+        hammerBar.SetHammerBar(hsToSet);
 	}
 
     private void StartShowFurnaceAction()
 	{
+		StartCoroutine(ShowFurnaceAction_IEnum());
+	}
+	private IEnumerator ShowFurnaceAction_IEnum()
+	{
+		yield return new WaitForSeconds(0.5f);
+        furnaceBar.gameObject.SetActive(true);
 		FurnaceSettings fsToSet = furnaceSettings[(int)levelSettings[curLevel - 1].sequence[curAction - 1].y];
-		furnaceBar.SetFurnaceBar(fsToSet);
+        furnaceBar.SetFurnaceBar(fsToSet);
 	}
 
     private void OnHammerSuccess()
 	{
 		UpdateTimerUI(timer += HAMMER_REWARD);
-		hammerBar.gameObject.SetActive(false);
-		OnActionSuccess();
+		StartCoroutine(OnHammerSuccess_IEnum());
+
 	}
 
     private IEnumerator OnHammerSuccess_IEnum()
 	{
-		yield return null;
+		yield return new WaitForSeconds(0.7f);
+		InstantiatePoofPrefab(hammerBar.transform.position);
+		hammerBar.gameObject.SetActive(false);
+		OnActionSuccess();
 	}
 
     private void OnHammerFailed()
 	{
-		
+		OnActionFailed();
 	}
-
+    
 	private IEnumerator OnHammerFailed_IEnum()
     {
         yield return null;
@@ -434,24 +456,32 @@ public class GameManager : MonoBehaviour
 	private void OnFurnaceSuccess()
     {
 		UpdateTimerUI(timer += FURNACE_REWARD);
-		furnaceBar.gameObject.SetActive(false);
-		OnActionSuccess();
+		furnaceBar.GetComponent<Animator>().Play("Success");
+		StartCoroutine(OnFurnaceSuccess_IEnum());
     }
 
 	private IEnumerator OnFurnaceSuccess_IEnum()
     {
-        yield return null;
+		yield return new WaitForSeconds(1f);
+		InstantiatePoofPrefab(furnaceBar.transform.position);
+		furnaceBar.gameObject.SetActive(false);
+        OnActionSuccess();
     }
    
     private void OnFurnaceFailed()
     {
-		furnaceBar.gameObject.SetActive(false);
-		ChangeActionState(ACTIONSTATES.ENDACTION);
+		furnaceBar.GetComponent<Animator>().Play("Failed");
+		furnaceBar.GetComponent<CameraShake>().Shake(0.2f, 0.02f);
+		StartCoroutine(OnFurnaceFailed_IEnum());      
     }
 
 	private IEnumerator OnFurnaceFailed_IEnum()
     {
-        yield return null;
+		yield return new WaitForSeconds(1f);
+		InstantiatePoofPrefab(furnaceBar.transform.position);
+        furnaceBar.gameObject.SetActive(false);
+        OnActionFailed();
+		ChangeActionState(ACTIONSTATES.ENDACTION);
     }
 
 
@@ -468,6 +498,12 @@ public class GameManager : MonoBehaviour
     private void UpdateTimerUI(float timeLeft)
 	{
 		timerUI.text = ((int)timeLeft).ToString();
+	}
+
+	private void InstantiatePoofPrefab(Vector2 pos)
+	{
+		GameObject poofInstance = Instantiate(poofPrefab, pos, Quaternion.identity) as GameObject;
+		Destroy(poofInstance, 1f);
 	}
 
     void SETPATH()

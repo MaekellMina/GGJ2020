@@ -15,6 +15,8 @@ public class FurnaceBar : MonoBehaviour {
     private float maxTargetValue = 0.95f;
 	private float fillAmount = 0;
 
+	private bool tutorialDone;
+
 	public RectTransform parentRectTransform;
     public RectTransform targetMarker;
 
@@ -22,6 +24,7 @@ public class FurnaceBar : MonoBehaviour {
     public UnityEvent Failed;
 
     bool isTriggered;
+	bool started;
 
     public enum FurnaceHeatType
     {
@@ -38,24 +41,31 @@ public class FurnaceBar : MonoBehaviour {
 	void Update () {
         if (isTriggered == false)
         {
-            if (Input.GetKey(KeyCode.Space))
-            {
-				speed += acceleration;
-				fillAmount += Time.deltaTime * speed;
-				furnaceFill.anchoredPosition = new Vector2(furnaceFill.anchoredPosition.x,
-				                                           parentRectTransform.sizeDelta.y * fillAmount);
+			if (Input.GetKeyDown(KeyCode.Space)) 
+			{
+				started = true;
+			}
+			if (started)
+			{
+				if (Input.GetKey(KeyCode.Space))
+				{
+					speed += acceleration;
+					fillAmount += Time.deltaTime * speed;
+					furnaceFill.anchoredPosition = new Vector2(furnaceFill.anchoredPosition.x,
+															   parentRectTransform.sizeDelta.y * fillAmount);
 
-                if (fillAmount >= 1)
-                {
-                    ReleaseFurnace();
-                    return;
-                }
-            }
+					if (fillAmount >= 1)
+					{
+						ReleaseFurnace();
+						return;
+					}
+				}
 
-            if (Input.GetKeyUp(KeyCode.Space))
-            {
-                ReleaseFurnace();
-            }
+				if (Input.GetKeyUp(KeyCode.Space))
+				{
+					ReleaseFurnace();
+				}
+			}
         }
     }
 
@@ -69,6 +79,7 @@ public class FurnaceBar : MonoBehaviour {
 
         targetMarker.offsetMin = new Vector2(0, parentRectTransform.sizeDelta.y * minTargetValue);
 		isTriggered = false;
+		started = false;
     }
     public void ReleaseFurnace()
     {
