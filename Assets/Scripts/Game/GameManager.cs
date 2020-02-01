@@ -191,6 +191,7 @@ public class GameManager : MonoBehaviour
 					{
 						int randomAudio = UnityEngine.Random.Range(0, 3);
 						int audioIndex = 0;
+
 						switch(randomAudio)
 						{
 							case 0:
@@ -198,10 +199,10 @@ public class GameManager : MonoBehaviour
 								break;
 							case 1:
 								audioIndex = 18;
-								break;
+                                break;
 							case 2:
 								audioIndex = 22;
-								break;
+                                break;
 						}
 						AudioManager.instance.PlayAudioClip(audioIndex);
 						titleUI.GetComponent<Animator>().Play("Falldown");
@@ -463,7 +464,23 @@ public class GameManager : MonoBehaviour
 		UpdateTimerUI(timer += HAMMER_REWARD);
 		StartCoroutine(OnHammerSuccess_IEnum());
 
-	}
+        int randomAudio = UnityEngine.Random.Range(0, 3);
+        int audioIndex = 0;
+
+        switch (randomAudio)
+        {
+            case 0:
+                audioIndex = 19;
+                break;
+            case 1:
+                audioIndex = 20;
+                break;
+            case 2:
+                audioIndex = 21;
+                break;
+        }
+        AudioManager.instance.PlayAudioClip(audioIndex);
+    }
 
     private IEnumerator OnHammerSuccess_IEnum()
 	{
@@ -489,6 +506,23 @@ public class GameManager : MonoBehaviour
 		UpdateTimerUI(timer += FURNACE_REWARD);
 		furnaceBar.GetComponent<Animator>().Play("Success");
 		StartCoroutine(OnFurnaceSuccess_IEnum());
+
+        int randomAudio = UnityEngine.Random.Range(0, 3);
+        int audioIndex = 0;
+
+        switch (randomAudio)
+        {
+            case 0:
+                audioIndex = 19;
+                break;
+            case 1:
+                audioIndex = 20;
+                break;
+            case 2:
+                audioIndex = 21;
+                break;
+        }
+        AudioManager.instance.PlayAudioClip(audioIndex);
     }
 
 	private IEnumerator OnFurnaceSuccess_IEnum()
