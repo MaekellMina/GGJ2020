@@ -110,14 +110,16 @@ public class HammerBar : MonoBehaviour
 							exit = true;
 							Success.Invoke();
 						}
-					}
+                        AudioManager.instance.PlayAudioClip(Random.Range(9,13));
+                    }
 					else
 					{
 						Debug.Log("WRONG");
 						cameraShake.Shake(0.1f, 0.02f);
 						animator.Play("Fail");
 						Failed.Invoke();
-					}
+                        AudioManager.instance.PlayAudioClip(13);
+                    }
 
 					if(!tutorialDone)
 					{
