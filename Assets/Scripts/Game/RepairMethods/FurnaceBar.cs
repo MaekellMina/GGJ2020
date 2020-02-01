@@ -6,21 +6,22 @@ using UnityEngine.Events;
 
 public class FurnaceBar : MonoBehaviour {
 
-	public Image furnaceImg;
+	public RectTransform furnaceFill;
     float barStartValue = 0f;
 	private float curValue;
     private float acceleration;
     private float speed = 0.03f;
     private float minTargetValue = 0.5f;
-    private float maxTargetValue = 0.6f;
+    private float maxTargetValue = 0.95f;
+	private float fillAmount = 0;
 
-    private RectTransform rectTransform;
+	public RectTransform parentRectTransform;
     public RectTransform targetMarker;
 
     public UnityEvent Success;
     public UnityEvent Failed;
 
-    bool isTriggred;
+    bool isTriggered;
 
     public enum FurnaceHeatType
     {
@@ -29,25 +30,22 @@ public class FurnaceBar : MonoBehaviour {
         TooLow
     }
 
-	// Use this for initialization
-	void Start () {
-        furnaceImg.fillAmount = barStartValue;
-        rectTransform = GetComponent<RectTransform>();
-        SetFurnaceBar(0.1f,0.05f,0.95f,0.8f);
-        isTriggred = false;
+	public void Awake () 
+	{
+		SetFurnaceBar(new FurnaceSettings(0.1f, 0.05f, 0.8f));
 	}
 
-	// Update is called once per frame
 	void Update () {
-        if (isTriggred == false)
+        if (isTriggered == false)
         {
             if (Input.GetKey(KeyCode.Space))
             {
-                speed += acceleration;
-                curValue += Time.deltaTime * speed;
-                furnaceImg.fillAmount = curValue;
+				speed += acceleration;
+				fillAmount += Time.deltaTime * speed;
+				furnaceFill.anchoredPosition = new Vector2(furnaceFill.anchoredPosition.x,
+				                                           parentRectTransform.sizeDelta.y * fillAmount);
 
-                if (furnaceImg.fillAmount >= 1)
+                if (fillAmount >= 1)
                 {
                     ReleaseFurnace();
                     return;
@@ -61,19 +59,20 @@ public class FurnaceBar : MonoBehaviour {
         }
     }
 
-    public void SetFurnaceBar(float speed, float acceleration, float maxTargetValue, float minTargetValue)
+	public void SetFurnaceBar(FurnaceSettings furnaceSettings)
     {
-        furnaceImg.fillAmount = 0;
-        this.speed = speed;
-        this.acceleration = acceleration;
-        this.maxTargetValue = maxTargetValue;
-        this.minTargetValue = minTargetValue;
+        fillAmount = 0;
+		furnaceFill.anchoredPosition = new Vector2(furnaceFill.anchoredPosition.x, 0);
+		this.speed = furnaceSettings.fillSpeed;
+		this.acceleration = furnaceSettings.fillAcceleration;
+		this.minTargetValue = furnaceSettings.minTargetValue;
 
-        targetMarker.offsetMin = new Vector2(0, rectTransform.sizeDelta.y * minTargetValue);
+        targetMarker.offsetMin = new Vector2(0, parentRectTransform.sizeDelta.y * minTargetValue);
+		isTriggered = false;
     }
     public void ReleaseFurnace()
     {
-        FurnaceHeatType result = HeatStatus(furnaceImg.fillAmount);
+        FurnaceHeatType result = HeatStatus(fillAmount);
         Debug.Log(result);
         switch (result)
         {
@@ -87,7 +86,7 @@ public class FurnaceBar : MonoBehaviour {
                 Failed.Invoke();
                 break;
         }
-        isTriggred = true;
+        isTriggered = true;
     }
     
     public FurnaceHeatType HeatStatus(float amount)

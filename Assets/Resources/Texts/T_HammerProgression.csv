@@ -1,0 +1,16 @@
+Level,MinRequiredHits,MaxRequiredHits,ScrollSpeed,HammerBarWidth,StartTargetPercentage,EndTargetPercentage,RandomizeTargetRangePos
+1, 4, 4, 18, 1300, 0.415, 0.585, false
+2, 5, 5, 22, 1300, 0.415, 0.585, false
+3, 3, 7, 22, 1300, 0.435, 0.565, false
+4, 3, 8, 22, 1300, 0.435, 0.565, true
+5, 5, 5, 22, 1100, 0.435, 0.565, false
+6, 4, 9, 24, 1100, 0.435, 0.565, false
+7, 5, 9, 24, 1100, 0.435, 0.565, true
+8, 5, 9, 24, 1000, 0.435, 0.565, true
+9, 5, 10, 26, 1000, 0.435, 0.565, true
+10, 4, 10, 26, 1000, 0.45, 0.55, true
+11, 4, 10, 28, 1000, 0.45, 0.55, true
+12, 4, 10, 28, 800, 0.45, 0.55, true
+13, 5, 11, 28.5, 900, 0.45, 0.55, true
+14, 5, 11, 32, 900, 0.45, 0.55, true
+14, 5, 11, 32, 800, 0.45, 0.55, true
