@@ -577,7 +577,7 @@ public class GameManager : MonoBehaviour
 
     private void OnActionFailed()
 	{
-		
+		DecreaseLives();
 	}
 
     private void UpdateTimerUI(float timeLeft)
