@@ -61,6 +61,8 @@ public class GameManager : MonoBehaviour
 	public GameObject ingameCanvas;
 	public GameObject titleUI;
 	public GameObject pressSpaceKeyUI;
+	public Animator scoreSword;
+	public Text scoreText;
 
 	//--------private game fields
 	private List<LevelSettings> levelSettings;
@@ -69,7 +71,7 @@ public class GameManager : MonoBehaviour
 	private int curLevel = 1;
 	private int curAction = 1;
 	private float timer;
-
+	private int score;
 
 	public float MAX_TIME = 20f;
 	public float FURNACE_REWARD = 3f;
@@ -220,6 +222,7 @@ public class GameManager : MonoBehaviour
 					ingameCanvas.SetActive(true);
 					curLevel = 1;
 					UpdateTimerUI(timer = MAX_TIME);
+					UpdateScoreUI(score = 0);
                     
                     //
                     gameStateCallOnce = false;
@@ -536,6 +539,16 @@ public class GameManager : MonoBehaviour
 		GameObject poofInstance = Instantiate(poofPrefab, pos, Quaternion.identity) as GameObject;
 		Destroy(poofInstance, 1f);
 	}
+
+	private void UpdateScoreUI(float score, bool animate = true)
+    {
+		scoreText.text = score.ToString();
+        if (animate)
+        {
+			scoreSword.GetComponent<Animator>().Play("Pop");
+        }
+
+    }
 
     private IEnumerator Start_IEnum()
 	{
