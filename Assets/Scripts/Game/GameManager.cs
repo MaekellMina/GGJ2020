@@ -61,6 +61,8 @@ public class GameManager : MonoBehaviour
 	public GameObject ingameCanvas;
 	public GameObject titleUI;
 	public GameObject pressSpaceKeyUI;
+	public Animator scoreSword;
+	public Text scoreText;
 
 	//--------private game fields
 	private List<LevelSettings> levelSettings;
@@ -69,7 +71,7 @@ public class GameManager : MonoBehaviour
 	private int curLevel = 1;
 	private int curAction = 1;
 	private float timer;
-
+	private int score;
 
 	public float MAX_TIME = 20f;
 	public float FURNACE_REWARD = 3f;
@@ -221,6 +223,7 @@ public class GameManager : MonoBehaviour
 					ingameCanvas.SetActive(true);
 					curLevel = 1;
 					UpdateTimerUI(timer = MAX_TIME);
+					UpdateScoreUI(score = 0);
                     
                     //
                     gameStateCallOnce = false;
@@ -462,6 +465,7 @@ public class GameManager : MonoBehaviour
     private void OnHammerSuccess()
 	{
 		UpdateTimerUI(timer += HAMMER_REWARD);
+		UpdateScoreUI(++score);
 		StartCoroutine(OnHammerSuccess_IEnum());
 
         int randomAudio = UnityEngine.Random.Range(0, 3);
@@ -504,6 +508,7 @@ public class GameManager : MonoBehaviour
 	private void OnFurnaceSuccess()
     {
 		UpdateTimerUI(timer += FURNACE_REWARD);
+		UpdateScoreUI(++score);
 		furnaceBar.GetComponent<Animator>().Play("Success");
 		StartCoroutine(OnFurnaceSuccess_IEnum());
 
@@ -570,6 +575,13 @@ public class GameManager : MonoBehaviour
 		GameObject poofInstance = Instantiate(poofPrefab, pos, Quaternion.identity) as GameObject;
 		Destroy(poofInstance, 1f);
 	}
+
+	private void UpdateScoreUI(int score)
+    {
+        scoreText.text = score.ToString();
+        scoreSword.Play("Pop");
+
+    }
 
     private IEnumerator Start_IEnum()
 	{
