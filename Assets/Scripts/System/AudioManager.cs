@@ -151,6 +151,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+
     public void StopBgMusic()
     {
         bgAudioSource.Stop();
