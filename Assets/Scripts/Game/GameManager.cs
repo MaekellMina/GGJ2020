@@ -321,6 +321,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator GameOver()
     {
+		yield return new WaitForSeconds(0.7f);
         if(b_pass)
         {
             // If user has won
@@ -600,7 +601,15 @@ public class GameManager : MonoBehaviour
         scoreSword.Play("Pop");
 
     }
-
+    public void DecreaseLives()
+	{
+		lives--;
+		anvils[lives].Play("Break");
+        if(lives <= 0)
+		{
+			ChangeGameState(GAMESTATES.GAMEOVER);
+		}
+	}
     private IEnumerator Start_IEnum()
 	{
 		yield return new WaitForSeconds(0.7f);
