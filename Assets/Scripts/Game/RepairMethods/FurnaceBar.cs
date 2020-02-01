@@ -46,7 +46,9 @@ public class FurnaceBar : MonoBehaviour {
 			if (Input.GetKeyDown(KeyCode.Space)) 
 			{
 				started = true;
-			}
+                int randomAudio = UnityEngine.Random.Range(23, 25);
+                AudioManager.instance.PlayAudioClip(randomAudio);
+            }
 			if (started)
 			{
 				if (Input.GetKey(KeyCode.Space))
@@ -93,7 +95,7 @@ public class FurnaceBar : MonoBehaviour {
     {
         fillAmount = 0;
 		furnaceFill.anchoredPosition = new Vector2(furnaceFill.anchoredPosition.x, 0);
-		this.speed = furnaceSettings.fillSpeed;
+		this.speed = furnaceSettings.fillSpeed; 
 		this.acceleration = furnaceSettings.fillAcceleration;
 		this.minTargetValue = furnaceSettings.minTargetValue;
 
