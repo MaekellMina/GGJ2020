@@ -104,6 +104,8 @@ public class HammerBar : MonoBehaviour
 			{
 				if (canHammer)
 				{
+					GameManager.instance.AnimateHammering();
+					
 					if (timingIndicator.anchoredPosition.x >= hammerbarWidth * targetStartPercentage &&
 					   timingIndicator.anchoredPosition.x <= hammerbarWidth * targetEndPercentage)
 					{

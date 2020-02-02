@@ -67,6 +67,11 @@ public class GameManager : MonoBehaviour
 	public Text scoreText;
     public Text gameoverScore;
 	public Animator[] anvils;
+	public Animator heavey;
+	public Transform anvilSwordPos;
+	public GameObject[] swordPrefabs;
+	private GameObject[] swordInstance = new GameObject[2];
+	private int swordInstanceIndex = 0;
 
 	//--------private game fields
 	private List<LevelSettings> levelSettings;
@@ -189,6 +194,8 @@ public class GameManager : MonoBehaviour
 				if(gameStateCallOnce)
 				{
 					AudioManager.instance.PlayBGMusic(AudioManager.instance.audioClipList[6]);
+					AudioManager.instance.PlayAudioClip(27, false, 0.3f);
+
 					gameStateCallOnce = false;
 				}
 
@@ -209,7 +216,7 @@ public class GameManager : MonoBehaviour
                 {
 					// -- Put codes that are needed to be called only once -- //
 					//Do the setup for the game here.
-					AudioManager.instance.PlayBGMusic(AudioManager.instance.audioClipList[1]);
+					AudioManager.instance.PlayBGMusic(AudioManager.instance.audioClipList[2]);
 					ingameCanvas.SetActive(true);
 					lives = 3;
 					for (int i = 0; i < anvils.Length; i++)
@@ -309,12 +316,13 @@ public class GameManager : MonoBehaviour
         actionState = state;
         actionStateCallOnce = true;        // Set to true so every time the state change, there's a place to call some code once in the loop
     }
-
+    
     #endregion
 
     IEnumerator GameOver()
     {
 		yield return new WaitForSeconds(0.7f);
+		AudioManager.instance.PlayAudioClip(UnityEngine.Random.Range(25, 27));
         gameoverScore.text = score.ToString();
         gameoverCanvas.SetActive(true);
         ingameCanvas.SetActive(false);
@@ -336,6 +344,7 @@ public class GameManager : MonoBehaviour
 					if (curLevel > levelSettings.Count)
 						curLevel = levelSettings.Count; //repeat level forever if reached final level
 
+					ShowWeapon();
                     curAction = 1;
 					ChangeActionState(ACTIONSTATES.STARTACTION);
 
@@ -365,6 +374,11 @@ public class GameManager : MonoBehaviour
                
                     //
                     levelStateCallOnce = false;
+
+
+                    HideWeapon();
+					curLevel++;
+					ChangeLevelState(LEVELSTATES.STARTLEVEL);
                 }
 
                 break;            
@@ -425,8 +439,7 @@ public class GameManager : MonoBehaviour
                     
 					if(curAction > levelSettings[curLevel - 1].sequence.Count)
 					{
-						curLevel++;
-						ChangeLevelState(LEVELSTATES.STARTLEVEL);
+						ChangeLevelState(LEVELSTATES.ENDLEVEL);
 					}
 					else
 					{
@@ -438,6 +451,22 @@ public class GameManager : MonoBehaviour
                 break;
         }
     }
+
+    private void ShowWeapon()
+	{      
+        swordInstanceIndex = swordInstanceIndex + 1 > 1 ? 0 : swordInstanceIndex + 1;
+		Debug.Log("SHOW " + swordInstanceIndex);
+		swordInstance[swordInstanceIndex] = Instantiate(swordPrefabs[UnityEngine.Random.Range(0, swordPrefabs.Length)], anvilSwordPos.parent) as GameObject;
+		swordInstance[swordInstanceIndex].transform.position = anvilSwordPos.position;
+	}
+
+    private void HideWeapon()
+	{
+		Debug.Log("HIDE " + swordInstanceIndex);
+		swordInstance[swordInstanceIndex].GetComponent<SpriteRenderer>().sprite = swordInstance[swordInstanceIndex].transform.GetChild(0).GetComponent<SpriteRenderer>().sprite;
+		swordInstance[swordInstanceIndex].GetComponent<Animator>().Play("Hide");
+		Destroy(swordInstance[swordInstanceIndex], .6f);
+	}
 
     private void StartShowHammerAction()
 	{
@@ -509,6 +538,11 @@ public class GameManager : MonoBehaviour
 
 	private IEnumerator OnFurnaceSuccess_IEnum()
     {
+		if (curAction + 1 > levelSettings[curLevel - 1].sequence.Count)
+		{
+			swordInstance[swordInstanceIndex].GetComponent<SpriteRenderer>().sprite = swordInstance[swordInstanceIndex].transform.GetChild(0).GetComponent<SpriteRenderer>().sprite;
+		}
+		
 		yield return new WaitForSeconds(1f);
 		InstantiatePoofPrefab(furnaceBar.transform.position);
 		furnaceBar.gameObject.SetActive(false);
@@ -526,6 +560,11 @@ public class GameManager : MonoBehaviour
 
 	private IEnumerator OnFurnaceFailed_IEnum()
     {
+		if (curAction + 1 > levelSettings[curLevel - 1].sequence.Count)
+		{
+			swordInstance[swordInstanceIndex].GetComponent<SpriteRenderer>().sprite = swordInstance[swordInstanceIndex].transform.GetChild(0).GetComponent<SpriteRenderer>().sprite;
+		}
+
 		yield return new WaitForSeconds(1f);
 		InstantiatePoofPrefab(furnaceBar.transform.position);
         furnaceBar.gameObject.SetActive(false);
@@ -550,7 +589,12 @@ public class GameManager : MonoBehaviour
 			timeLeft = 0;
 		if (timeLeft > MAX_TIME)
 			timeLeft = MAX_TIME;
-		timerUI.text = ((int)timeLeft).ToString();
+
+		if (timerUI.text != ((int)timeLeft).ToString())
+		{
+			timerUI.text = ((int)timeLeft).ToString();
+			timerUI.GetComponent<Animator>().Play("TimerTick");
+		}
 	}
 
 	private void InstantiatePoofPrefab(Vector2 pos)
@@ -615,4 +659,20 @@ public class GameManager : MonoBehaviour
         }
         AudioManager.instance.PlayAudioClip(audioIndex);
     }
+
+    public void AnimateHammering()
+	{
+		heavey.Play("Hit");
+        swordInstance[swordInstanceIndex].GetComponent<Animator>().Play("Hit");      
+	}
+    public void AnimateQuenching()
+	{
+		heavey.Play("Quench");
+		swordInstance[swordInstanceIndex].GetComponent<Animator>().Play("Quench");      
+	}
+    public void AnimateWaiting()
+	{
+		heavey.Play("Idle");
+		swordInstance[swordInstanceIndex].GetComponent<Animator>().Play("Waiting");      
+	}
 }

@@ -51,8 +51,10 @@ public class FurnaceBar : MonoBehaviour {
 			if (Input.GetKeyDown(KeyCode.Space)) 
 			{
 				started = true;
+				GameManager.instance.AnimateQuenching();
+				AudioManager.instance.PlayAudioClip(UnityEngine.Random.Range(30, 33));
                 int randomAudio = UnityEngine.Random.Range(23, 25);
-                AudioManager.instance.PlayAudioClip(randomAudio);
+                AudioManager.instance.PlayAudioClip(randomAudio,false, 0.4f);
             }
 			if (started)
 			{
@@ -113,6 +115,7 @@ public class FurnaceBar : MonoBehaviour {
     }
     public void ReleaseFurnace()
     {
+		GameManager.instance.AnimateWaiting();
         FurnaceHeatType result = HeatStatus(fillAmount);
         Debug.Log(result);
         switch (result)
